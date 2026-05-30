@@ -4,6 +4,9 @@ on:
   push:
     branches: [main] # déclenche UNIQUEMENT sur main
 
+permissions:
+  contents: write
+
 # ─── VARIABLES ─────────────────────────────────────────
 env:
   NODE_VERSION: "20"
