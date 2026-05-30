@@ -1,0 +1,59 @@
+name: CI + Déploiement continu (Deployment)
+
+on:
+  push:
+    branches: [main] # déclenche UNIQUEMENT sur main
+
+# ─── VARIABLES ─────────────────────────────────────────
+env:
+  NODE_VERSION: "20"
+  APP_NAME: "calculatrice-web"
+
+jobs:
+  # ══ JOB 1 : tester ══════════════════════════════════
+  tester:
+    runs-on: ubuntu-latest # ← RUNNER
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm" # ← CACHE
+
+      - run: npm ci
+
+      - name: Lancer les tests
+        run: npm run test:report
+
+      - name: Sauvegarder le rapport
+        uses: actions/upload-artifact@v4 # ← ARTEFACT
+        with:
+          name: rapport-tests
+          path: rapport-tests.json
+
+  # ══ JOB 2 : déployer sur GitHub Pages ═══════════════
+  deployer:
+    needs: tester
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Déployer sur GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          # ← SECRET automatique, fourni par GitHub — rien à créer !
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          exclude_assets: ".github,node_modules,*.test.js,*.json"
+
+      # Exemple de SECRET manuel (optionnel)
+      - name: Notifier l'équipe
+        if: success()
+        run: |
+          echo "App ${{ env.APP_NAME }} déployée !"
+          # Décommenter pour activer les notifications Slack :
+          # curl -X POST ${{ secrets.SLACK_WEBHOOK }} \
+          #   -d '{"text":"Déploiement réussi ✅"}'

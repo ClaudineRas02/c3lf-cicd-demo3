@@ -1,0 +1,11 @@
+{
+  "name": "calculatrice-web",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "jest --testPathPattern=app.test.js",
+    "test:report": "jest --testPathPattern=app.test.js --json --outputFile=rapport-tests.json"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}
