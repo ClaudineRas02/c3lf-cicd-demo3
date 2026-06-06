@@ -36,7 +36,7 @@ jobs:
           name: rapport-tests
           path: rapport-tests.json
 
-  # ══ JOB 2 : déployer sur GitHub Pages ═══════════════
+  # ══ JOB 2 : déployer sur GitHub Pages ═══════════════1
   deployer:
     needs: tester
     runs-on: ubuntu-latest
