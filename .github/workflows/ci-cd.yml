@@ -3,6 +3,7 @@ name: CI + Déploiement continu (Deployment)
 on:
   push:
     branches: [main] # déclenche UNIQUEMENT sur main
+  workflow_dispatch: # permet de lancer le déploiement manuellement avec le bouton "Run workflow"
 
 permissions:
   contents: write
@@ -36,9 +37,10 @@ jobs:
           name: rapport-tests
           path: rapport-tests.json
 
-  # ══ JOB 2 : déployer sur GitHub Pages ═══════════════1
+  # ══ JOB 2 : déployer sur GitHub Pages ═══════════════
   deployer:
     needs: tester
+    if: github.event_name == 'workflow_dispatch' # déploie seulement après un clic manuel
     runs-on: ubuntu-latest
 
     steps:
